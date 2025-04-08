@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/maxwell7774/chirpy/internal/database"
 )
 
 type User struct {
@@ -16,7 +15,7 @@ type User struct {
 	Email     string    `json:"email"`
 }
 
-func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
+func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
 		Email string `json:"email"`
 	}
@@ -29,12 +28,7 @@ func (cfg *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	user, err := cfg.db.CreateUser(r.Context(), database.CreateUserParams{
-		ID:        uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		Email:     params.Email,
-	})
+	user, err := cfg.db.CreateUser(r.Context(), params.Email)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create the user", err)
 		return
